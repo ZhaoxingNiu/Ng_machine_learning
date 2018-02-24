@@ -106,7 +106,7 @@ pause;
 % Initialize fitting parameters
 initial_theta = zeros(size(X, 2), 1);
 
-% Set regularization parameter lambda to 1 (you should vary this)
+% Set regularization parameter lambda to 1 (you should vary this)   1  0  100
 lambda = 1;
 
 % Set Options
