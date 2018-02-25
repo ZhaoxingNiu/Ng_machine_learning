@@ -62,22 +62,47 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+%theta 因为是 hidden*(input_layer_size+1)  因此相乘时需要转置
+a1 = [ones(m,1) X];
+z2 = a1*Theta1';
+a2 = sigmoid(z2);
+a2 = [ones(size(a2,1),1) a2];
+z3 = a2*Theta2';
+a3 = sigmoid(z3);
 
+%% 按照列进行赋值
+yy = zeros(m,num_labels);
+for i = 1:num_labels
+	yy(:,i) = (y==i);
+end
 
+%% calculate the J
+% 正则化的时候 theta 的第一列 不需要加上去 对应bias的列 ？？理解公式
+J = 1 / m * sum(sum(-yy.*log(a3)-(1-yy).*log(1-a3) )) + ...
+	lambda/2/m*(sum(sum(Theta1(:,2:end).^2)) + sum(sum(Theta2(:,2:end).^2)));
 
+%calculate the grad
 
+% 使用向量化计算的时候，主要考虑size 来确定先后顺序以及是否转置
+% 1.实施正向传播到第三层时，算出与真值的误差
+det3 = a3-yy;
 
+% 2.利用sigmoid函数的梯度，算出第二层的误差矩阵
+det2= det3*Theta2.*sigmoidGradient([ones(m,1) z2]);  
+det2 = det2(:,2:end);
 
+% 3.计算各层的梯度（注意要去掉第一列，即常数列）
+% 需要m项累计，选择前一项的列以及后一项的行是  m
+Theta1_grad=Theta1_grad+det2'*a1;  
+Theta2_grad=Theta2_grad+det3'*a2;
 
-
-
-
-
-
-
-
-
-
+% 4.正则化
+Theta1_grad(:,1)=Theta1_grad(:,1)/m;  
+Theta1_grad(:,2:size(Theta1_grad,2))=Theta1_grad(:,2:size(Theta1_grad,2))/m+...  
+    lambda*Theta1(:,2:size(Theta1,2))/m;  
+Theta2_grad(:,1)=Theta2_grad(:,1)/m;  
+Theta2_grad(:,2:size(Theta2_grad,2))=Theta2_grad(:,2:size(Theta2_grad,2))/m+...  
+    lambda*Theta2(:,2:size(Theta2,2))/m;
 
 
 % -------------------------------------------------------------
