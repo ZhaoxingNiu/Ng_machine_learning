@@ -1,2 +1,3 @@
 # Ng_machine_learning
-this is program exercise of machine leanrning course on the coursera
+Coursera_Stanford_ML_ex
+implemented by octave
