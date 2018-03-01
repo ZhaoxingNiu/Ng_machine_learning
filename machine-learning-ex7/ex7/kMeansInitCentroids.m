@@ -13,9 +13,9 @@ centroids = zeros(K, size(X, 2));
 %               the dataset X
 %
 
-
-
-
+% random gen the id
+randID = randperm(size(X,1));
+centroids = X(randID(1:K),:);
 
 
 
